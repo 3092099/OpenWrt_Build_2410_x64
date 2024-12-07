@@ -51,15 +51,15 @@ jobs:
     - name: Prepare Mixedwrt
       run: |
         sudo chown -R runner:runner /home/runner/work/OpenWrt_Build_2410_x64
-        cp -r ./diy_script/. ./
+        cp -r $GITHUB_WORKSPACE/diy_script/. ./
         /bin/bash 01_get_ready.sh
 
     - name: Prepare Package
       working-directory: ${{ github.workspace }}/openwrt
       run: |
-        cp -r ../diy_script/. ./
+        cp -r $GITHUB_WORKSPACE/diy_script/. ./
         /bin/bash 02_prepare_package.sh
-        /bin/bash 02_target_only.sh
+        /bin/bash 00_target_only.sh
         /bin/bash 04_remove_upx.sh
 
     - name: Load .config
