@@ -112,8 +112,7 @@ jobs:
       id: compileopenwrt
       continue-on-error: true
       run: |
-        #echo | make kernel_oldconfig -j$(($(nproc) + 1)) 
-        make -j$(($(nproc) + 1)) package/network/utils/nftables/refresh V=s
+        make -j$(nproc) || make -j1 V=s
         IGNORE_ERRORS=1 make -j$(($(nproc) + 1))
         echo $?
 
@@ -128,31 +127,25 @@ jobs:
     - name: Organize files
       id: organize
       run: |
-        rm -rf ./artifact/
         mkdir -p ./artifact/
         build_date=$(TZ=Asia/Shanghai date "+%Y.%m.%d")
-        find $OPENWRT_PATH/bin/targets/ -type f \( -name "*squashfs-combined*.gz" -o -name "*sysupgrade*" \) -exec mv {} ./artifact \; 2>/dev/null || true
+        cp -rf $(find openwrt/bin/targets/ -type f -name "*squashfs*efi*img*") ./artifact/
         cd artifact
+        echo 'artifact文件夹下整理前有以下文件：'
+        ls -Ahl
         md5=$(md5sum *squashfs-combined.img.gz | awk '{print $1}') 2>/dev/null || true
         md5_efi=$(md5sum *squashfs-combined-efi.img.gz | awk '{print $1}') 2>/dev/null || true
         echo "md5=$md5" > md5sum.txt
         echo "md5_efi=$md5_efi" >> md5sum.txt
         rm -rf sha256sums
-        echo 'artifact文件夹下有以下文件：'
+        echo 'artifact文件夹下整理后有以下文件：'
         ls -Ahl
-        #echo 'openwrt/bin/targets/x86/64文件夹下有以下文件：'
-        #ls -Ahl openwrt/bin/targets/x86/64/
-        #echo '文件更名中...'
-        #mv openwrt/bin/targets/x86/64/openwrt-x86-64-generic-squashfs-combined.img ./artifact/OpenWrt-2410-x64-test-$build_date-bios.img
-        #mv openwrt/bin/targets/x86/64/openwrt-x86-64-generic-squashfs-combined-efi.img ./artifact/OpenWrt-2410-x64-test-$build_date-uefi.img
-        #cd ./artifact/
-        #echo './artifact/文件夹下有以下文件：'
-        #ls -Ahl
-        #echo '打包处理./artifact/文件夹的文件：'
-        #gzip -d *.gz && exit 0
-        #gzip --best *.img
-        #echo '打包处理后，./artifact/文件夹下有以下文件：'
-        #ls -Ahl
+
+    - name: Upload Firmware To Artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: OpenWrt_2410_x64_test_$build_date
+        path: ./artifact/
 
     - name: Create release
       id: create_release
