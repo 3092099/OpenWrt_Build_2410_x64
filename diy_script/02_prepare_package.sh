@@ -4,6 +4,61 @@ clear
 ### 基础部分 ###
 # 使用 O2 级别的优化
 sed -i 's/Os/O2/g' include/target.mk
+# 修改主机名字，修改你喜欢的就行（不能纯数字或者使用中文）
+sed -i "/uci commit system/i\uci set system.@system[0].hostname='OpenWrt-GXNAS'" package/lean/default-settings/files/zzz-default-settings
+sed -i "s/hostname='.*'/hostname='OpenWrt-GXNAS'/g" ./package/base-files/files/bin/config_generate
+
+# 修改默认IP
+sed -i 's/192.168.1.1/192.168.18.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.18.1/g' package/base-files/luci2/bin/config_generate
+
+# 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
+sed -i '/$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF./d' package/lean/default-settings/files/zzz-default-settings
+
+# 调整 x86 型号只显示 CPU 型号
+sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/files/x86/autocore
+
+# 设置ttyd免帐号登录
+sed -i 's/\/bin\/login/\/bin\/login -f root/' feeds/packages/utils/ttyd/files/ttyd.config
+
+# 默认 shell 为 bash
+sed -i 's/\/bin\/ash/\/bin\/bash/g' package/base-files/files/etc/passwd
+
+# samba解除root限制
+sed -i 's/invalid users = root/#&/g' feeds/packages/net/samba4/files/smb.conf.template
+
+# coremark跑分定时清除
+sed -i '/\* \* \* \/etc\/coremark.sh/d' feeds/packages/utils/coremark/*
+
+# 修改 argon 为默认主题
+sed -i '/set luci.main.mediaurlbase=\/luci-static\/bootstrap/d' feeds/luci/themes/luci-theme-bootstrap/root/etc/uci-defaults/30_luci-theme-bootstrap
+sed -i 's/Bootstrap theme/Argon theme/g' feeds/luci/collections/*/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/*/Makefile
+
+# 最大连接数修改为65535
+sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
+
+# 替换curl修改版（无nghttp3、ngtcp2）
+curl_ver=$(grep -i "PKG_VERSION:=" feeds/packages/net/curl/Makefile | awk -F'=' '{print $2}')
+if [ "$curl_ver" != "8.9.1" ]; then
+    echo "当前 curl 版本是: $curl_ver,开始替换......"
+    rm -rf feeds/packages/net/curl
+    cp -rf $GITHUB_WORKSPACE/personal/curl feeds/packages/net/curl
+fi
+
+# 显示增加编译时间
+sed -i "s/DISTRIB_REVISION='R[0-9]\+\.[0-9]\+\.[0-9]\+'/DISTRIB_REVISION='@R$build_date'/g" package/lean/default-settings/files/zzz-default-settings
+sed -i 's/LEDE/OpenWrt_2305_x64_全功能版 by GXNAS build/g' package/lean/default-settings/files/zzz-default-settings
+
+# 修改右下角脚本版本信息
+sed -i 's/<a class=\"luci-link\" href=\"https:\/\/github.com\/openwrt\/luci\" target=\"_blank\">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)<\/a>/OpenWrt_2305_x64_全功能版 by GXNAS build @R'"$build_date"'/' package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a class="luci-link" href="https://wp.gxnas.com" target="_blank">🌐固件编译者：【GXNAS博客】</a>|' package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+sed -i 's|<%= ver.distversion %>|<a href="https://d.gxnas.com" target="_blank">👆点这里下载最新版本</a>|' package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+sed -i "/<a class=\"luci-link\"/d; /<a href=\"https:\/\/github.com\/jerrykuku\/luci-theme-argon\"/d; s|<%= ver.distversion %>|OpenWrt_2305_x64_全功能版 by GXNAS build @R$build_date|" package/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
+
+# 修改欢迎banner
+cp -f $GITHUB_WORKSPACE/diy_script/banner package/base-files/files/etc/banner
+
 # 更新 Feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a
