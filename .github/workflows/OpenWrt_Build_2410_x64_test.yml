@@ -131,16 +131,18 @@ jobs:
         rm -rf ./artifact/
         mkdir -p ./artifact/
         build_date=$(TZ=Asia/Shanghai date "+%Y.%m.%d")
+        echo 'openwrt/bin/targets/x86/64文件夹下有以下文件：'
+        ls -Ahl openwrt/bin/targets/x86/64/
+        echo '文件更名中...'
         mv openwrt/bin/targets/x86/64/openwrt-x86-64-generic-squashfs-combined.img ./artifact/OpenWrt-2410-x64-test-$build_date-bios.img
         mv openwrt/bin/targets/x86/64/openwrt-x86-64-generic-squashfs-combined-efi.img ./artifact/OpenWrt-2410-x64-test-$build_date-uefi.img
         cd ./artifact/
+        echo './artifact/文件夹下有以下文件：'
         ls -Ahl
+        echo '打包处理./artifact/文件夹的文件：'
         gzip -d *.gz && exit 0
         gzip --best *.img
-        ls -Ahl
-        sha256sum openwrt*x86* | tee X86-GC404-$(date +%Y-%m-%d)-${{ env.latest_release }}.sha256sum
-        zip X86-GC404-Docker-$(date +%Y-%m-%d)-${{ env.latest_release }}-ext4.zip *ext4-combined*
-        zip X86-GC404-Docker-$(date +%Y-%m-%d)-${{ env.latest_release }}-sfs.zip *squashfs-combined*
+        echo '打包处理后，./artifact/文件夹下有以下文件：'
         ls -Ahl
 
     - name: Create release
@@ -154,7 +156,7 @@ jobs:
         commit: "24.10"
         replacesArtifacts: true
         token: ${{ secrets.GH_TOKEN }}
-        artifacts: ./artifact/*.zip
+        artifacts: ./artifact/*
 
     - name: Print Disk Space After
       run: df -h
