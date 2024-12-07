@@ -66,11 +66,13 @@ cp -f $GITHUB_WORKSPACE/diy_script/banner package/base-files/files/etc/banner
 # 更新 Feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a
+
 # 移除 SNAPSHOT 标签
 sed -i 's,-SNAPSHOT,,g' include/version.mk
 sed -i 's,-SNAPSHOT,,g' package/base-files/image-config.in
 sed -i '/CONFIG_BUILDBOT/d' include/feeds.mk
 sed -i 's/;)\s*\\/; \\/' include/feeds.mk
+
 # Nginx
 sed -i "s/large_client_header_buffers 2 1k/large_client_header_buffers 4 32k/g" feeds/packages/net/nginx-util/files/uci.conf.template
 sed -i "s/client_max_body_size 128M/client_max_body_size 2048M/g" feeds/packages/net/nginx-util/files/uci.conf.template
@@ -79,6 +81,7 @@ sed -i '/client_max_body_size/a\\tserver_names_hash_bucket_size 128;' feeds/pack
 sed -i '/ubus_parallel_req/a\        ubus_script_timeout 600;' feeds/packages/net/nginx/files-luci-support/60_nginx-luci-support
 sed -ri "/luci-webui.socket/i\ \t\tuwsgi_send_timeout 600\;\n\t\tuwsgi_connect_timeout 600\;\n\t\tuwsgi_read_timeout 600\;" feeds/packages/net/nginx/files-luci-support/luci.locations
 sed -ri "/luci-cgi_io.socket/i\ \t\tuwsgi_send_timeout 600\;\n\t\tuwsgi_connect_timeout 600\;\n\t\tuwsgi_read_timeout 600\;" feeds/packages/net/nginx/files-luci-support/luci.locations
+
 # uwsgi
 sed -i 's,procd_set_param stderr 1,procd_set_param stderr 0,g' feeds/packages/net/uwsgi/files/uwsgi.init
 sed -i 's,buffer-size = 10000,buffer-size = 131072,g' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
@@ -87,6 +90,7 @@ sed -i '$a cgi-timeout = 600' feeds/packages/net/uwsgi/files-luci-support/luci-*
 sed -i 's/threads = 1/threads = 2/g' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
 sed -i 's/processes = 3/processes = 4/g' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
 sed -i 's/cheaper = 1/cheaper = 2/g' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
+
 # rpcd
 sed -i 's/option timeout 30/option timeout 60/g' package/system/rpcd/files/rpcd.config
 sed -i 's#20) \* 1000#60) \* 1000#g' feeds/luci/modules/luci-base/htdocs/luci-static/resources/rpc.js
@@ -100,12 +104,13 @@ cp -rf ../openwrt_ma/package/network/config/firewall4 ./package/network/config/f
 cp -rf ../patch/kernel/6.7_Boost_For_Single_TCP_Flow/* ./target/linux/generic/backport-6.6/
 cp -rf ../patch/kernel/6.8_Boost_TCP_Performance_For_Many_Concurrent_Connections-bp_but_put_in_hack/* ./target/linux/generic/hack-6.6/
 cp -rf ../patch/kernel/6.8_Better_data_locality_in_networking_fast_paths-bp_but_put_in_hack/* ./target/linux/generic/hack-6.6/
+
 # UDP optimizations
 cp -rf ../patch/kernel/6.7_FQ_packet_scheduling/* ./target/linux/generic/backport-6.6/
-# patch arm64 型号名称
-cp -rf ../patch/kernel/arm/* ./target/linux/generic/hack-6.6/
+
 # BBRv3
 cp -rf ../patch/kernel/bbr3/* ./target/linux/generic/backport-6.6/
+
 # LRNG
 cp -rf ../patch/kernel/lrng/* ./target/linux/generic/hack-6.6/
 echo '
