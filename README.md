@@ -6,27 +6,27 @@
 ## 当前编译状态：
 |    序号    |     架构名称    |    编译状态    |    固件下载    |
 | :-----------------: | :-------------: |:-----------------: | :-----------------: |
-| 1 |OpenWrt_2305_x64_全功能版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_all.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_all.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2305_x64_all)|
-| 2 |OpenWrt_2305_x64_主路由版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_wjq.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_wjq.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2305_x64_wjq)|
-| 3 |OpenWrt_2305_x64_旁路由版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_gxnas.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_gxnas.yml/badge.svg?style=flat" /></a>|[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2305_x64_gxnas)|
-| 4 |OpenWrt_2305_x64_精简版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_soot.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_soot.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2305_x64_soot)|
-| 5 |OpenWrt_2305_x64_测试版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_test.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2305_x64_test.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2305_x64_test)|
+| 1 |OpenWrt_2410_x64_全功能版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_all.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_all.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2410_x64_all)|
+| 2 |OpenWrt_2410_x64_主路由版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_wjq.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_wjq.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2410_x64_wjq)|
+| 3 |OpenWrt_2410_x64_旁路由版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_gxnas.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_gxnas.yml/badge.svg?style=flat" /></a>|[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2410_x64_gxnas)|
+| 4 |OpenWrt_2410_x64_精简版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_soot.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_soot.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2410_x64_soot)|
+| 5 |OpenWrt_2410_x64_测试版|<a href="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_test.yml"><img src="https://github.com/gxnas/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_2410_x64_test.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/gxnas/OpenWrt_Build_x64/releases/tag/OpenWrt_2410_x64_test)|
 
 </br>
 
 ## 项目说明 [![](https://github.com/gxnas/OpenWrt_Build_x64/blob/main/personal/describes.svg)](#项目说明-)
 - 固件编译使用的源代码来自：[![Lean](https://img.shields.io/badge/Lede-Lean-red.svg?style=flat&logo=appveyor)](https://github.com/coolsnowwolf/lede) 
-- 项目使用 Github Actions 拉取 [Lean](https://github.com/coolsnowwolf/lede) 的 `Openwrt-23.05（内核版本6.6）` 源码仓库进行云编译
-- 🔴[OpenWrt_2305_x64_全功能版] 固件默认的IP地址：`192.168.18.1` 默认密码：`无密码`
-- 🔴[OpenWrt_2305_x64_主路由版] 固件默认 IP 地址：`192.168.18.1` 默认密码：`无密码`
-- 🔴[OpenWrt_2305_x64_旁路由版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
-- 🔴[OpenWrt_2305_x64_精简版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
-- 🔴[OpenWrt_2305_x64_测试版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
+- 项目使用 Github Actions 拉取 [Lean](https://github.com/coolsnowwolf/lede) 的 `Openwrt-24.10（内核版本6.6）` 源码仓库进行云编译
+- 🔴[OpenWrt_2410_x64_全功能版] 固件默认的IP地址：`192.168.18.1` 默认密码：`无密码`
+- 🔴[OpenWrt_2410_x64_主路由版] 固件默认 IP 地址：`192.168.18.1` 默认密码：`无密码`
+- 🔴[OpenWrt_2410_x64_旁路由版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
+- 🔴[OpenWrt_2410_x64_精简版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
+- 🔴[OpenWrt_2410_x64_测试版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
 -  本库编译的x86固件为squashfs格式；
 -  ext4 与squashfs 格式的区别： ext4 格式的rootfs 可以扩展磁盘空间大小，而squashfs 不能。 squashfs 格式的rootfs 可以使用重置功能（恢复出厂设置），而ext4 不能；
 -  默认的固件容量：Kernel=32M、rootfs=968M，请确保安装OpenWrt的硬盘空间至少要有1G以上；
 -  OpenWrt升级方法：下载好对应版本的.img.gz文件到电脑上，不需要解压，然后在你的OpenWrt菜单“系统-备份/升级”直接选择下载好的.img.gz文件上传，刷写固件；
-- 🛑******最好不要跨大版本升级（比如1806升级到2305，或者6.1内核升级6.6），大版本更新建议采用全新安装方可获得最佳的体验。******
+- 🛑******最好不要跨大版本升级（比如1806升级到2410，或者6.1内核升级6.6），大版本更新建议采用全新安装方可获得最佳的体验。******
 
 ----
 - REPO_TOKEN密匙制作教程：https://git.io/jm.md
@@ -40,7 +40,7 @@
 
 ## 插件预览 [![](https://github.com/gxnas/OpenWrt_Build_x64/blob/main/personal/preview.svg)](#插件预览-)
 <details>
-<summary><b>&nbsp; OpenWrt_2305_x64 插件预览</b></summary>
+<summary><b>&nbsp; OpenWrt_2410_x64 插件预览</b></summary>
 <br/>
 
 | 功能列表 | - 全功能版 - | - 主路由版 - | - 旁路由版 - | - 精简版 - |
