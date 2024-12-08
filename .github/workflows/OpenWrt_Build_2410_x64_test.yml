@@ -116,6 +116,8 @@ jobs:
         make -j$(($(nproc) + 1)) package/network/utils/nftables/refresh V=s
         IGNORE_ERRORS=1 make -j$(($(nproc) + 1))
         echo $?
+        echo '编译完成，targets文件夹下有以下文件：'
+        ls -Ahl $OPENWRT_PATH/bin/targets/
 
     - name: If Error
       working-directory: ${{ github.workspace }}/openwrt
@@ -129,21 +131,26 @@ jobs:
       id: organize
       run: |
         mkdir -p firmware
-        find $OPENWRT_PATH/bin/targets/ -type f \( -name "*squashfs-combined*.gz" -o -name "*sysupgrade*" \) -exec mv {} ./firmware/ \; 2>/dev/null || true
+        echo '$OPENWRT_PATH/bin/targets/x86/64文件夹下整理前有以下文件：'
+        ls -Ahl $OPENWRT_PATH/bin/targets/x86/64
+        find $OPENWRT_PATH/bin/targets/x86/64 -type f \( -name "*squashfs-combined*.gz" -o -name "*sysupgrade*" \) -exec mv {} ./firmware/ \; 2>/dev/null || true
         [ -e release ] && cp release ./firmware/release.txt
         cd firmware
+        echo 'firmware文件夹下整理前有以下文件：'
+        ls -Ahl
         echo -n "${{ env.DATE }}" > version.txt
         md5=$(md5sum *squashfs-combined.img.gz | awk '{print $1}') 2>/dev/null || true
         md5_efi=$(md5sum *squashfs-combined-efi.img.gz | awk '{print $1}') 2>/dev/null || true
         echo "md5=$md5" > md5sum.txt
         echo "md5_efi=$md5_efi" >> md5sum.txt
         rm -rf sha256sums
-        echo "status=success" >> $GITHUB_OUTPUT
+        echo 'firmware文件夹下整理后有以下文件：'
+        ls -Ahl
 
     - name: Upload Firmware To Artifact
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt_2410_x64_test_$(TZ=Asia/Shanghai date "+%Y.%m.%d")
+        name: OpenWrt_2410_x64_test
         path: ./firmware/**
 
     - name: Create Release
@@ -151,15 +158,13 @@ jobs:
       run: |
         echo "release_tag=${{ env.DATE }}" >> $GITHUB_OUTPUT
         [ -e release ] && cp release ./release.txt
-        echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload Firmware To Release
       uses: softprops/action-gh-release@master
-      if: steps.organize.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         files: ./firmware/*.*
-        name: OpenWrt_2410_x64_test_$(TZ=Asia/Shanghai date "+%Y.%m.%d")
+        name: OpenWrt_2410_x64_test
         tag_name: OpenWrt_2410_x64_test
         body_path: release.txt
