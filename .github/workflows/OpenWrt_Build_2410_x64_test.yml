@@ -125,9 +125,8 @@ jobs:
         echo '================================================================'
         make -j1 V=s
 
-    - name: Organize files
+    - name: Organize Files
       id: organize
-      if: steps.compile.outputs.status == 'success' && !cancelled()
       run: |
         mkdir -p firmware
         find $OPENWRT_PATH/bin/targets/ -type f \( -name "*squashfs-combined*.gz" -o -name "*sysupgrade*" \) -exec mv {} ./firmware/ \; 2>/dev/null || true
@@ -143,20 +142,18 @@ jobs:
 
     - name: Upload Firmware To Artifact
       uses: actions/upload-artifact@main
-      if: steps.organize.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true' && !cancelled()
       with:
         name: OpenWrt_2410_x64_test_$(TZ=Asia/Shanghai date "+%Y.%m.%d")
         path: ./firmware/**
 
-    - name: Create release
+    - name: Create Release
       id: tag
-      if: steps.organize.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true' && !cancelled()
       run: |
         echo "release_tag=${{ env.DATE }}" >> $GITHUB_OUTPUT
         [ -e release ] && cp release ./release.txt
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload Firmware To release
+    - name: Upload Firmware To Release
       uses: softprops/action-gh-release@master
       if: steps.organize.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true' && !cancelled()
       env:
