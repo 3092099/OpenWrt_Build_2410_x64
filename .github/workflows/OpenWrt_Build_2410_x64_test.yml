@@ -123,11 +123,12 @@ jobs:
     - name: Organize Files
       id: organize
       run: |
+        cd ./openwrt
         mkdir -p firmware
-        echo '$OPENWRT_PATH/bin/targets/x86/64文件夹下整理前有以下文件：'
-        ls -Ahl $OPENWRT_PATH/bin/targets/x86/64
+        echo 'bin/targets/文件夹下整理前有以下文件：'
+        ls -Ahl bin/targets/
         echo '========================================='
-        find $OPENWRT_PATH/bin/targets/x86/64 -type f \( -name "*squashfs-combined*.gz" -o -name "*sysupgrade*" \) -exec mv {} ./firmware/ \; 2>/dev/null || true
+        rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|buildinfo\|sha256sums\|packages\|bin\|rootfs.img.gz\|rootfs.tar.gz\|combined.img.gz\)$")
         [ -e release ] && cp release ./firmware/release.txt
         cd firmware
         echo 'firmware文件夹下整理前有以下文件：'
