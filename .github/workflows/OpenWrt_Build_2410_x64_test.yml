@@ -118,14 +118,7 @@ jobs:
         echo $?
         echo '编译完成，targets文件夹下有以下文件：'
         ls -Ahl $OPENWRT_PATH/bin/targets/
-
-    - name: If Error
-      working-directory: ${{ github.workspace }}/openwrt
-      if: steps.compileopenwrt.outcome == 'failure'
-      run: |
-        cat ./.config
-        echo '================================================================'
-        make -j1 V=s
+        echo '========================================='
 
     - name: Organize Files
       id: organize
@@ -133,11 +126,13 @@ jobs:
         mkdir -p firmware
         echo '$OPENWRT_PATH/bin/targets/x86/64文件夹下整理前有以下文件：'
         ls -Ahl $OPENWRT_PATH/bin/targets/x86/64
+        echo '========================================='
         find $OPENWRT_PATH/bin/targets/x86/64 -type f \( -name "*squashfs-combined*.gz" -o -name "*sysupgrade*" \) -exec mv {} ./firmware/ \; 2>/dev/null || true
         [ -e release ] && cp release ./firmware/release.txt
         cd firmware
         echo 'firmware文件夹下整理前有以下文件：'
         ls -Ahl
+        echo '========================================='
         echo -n "${{ env.DATE }}" > version.txt
         md5=$(md5sum *squashfs-combined.img.gz | awk '{print $1}') 2>/dev/null || true
         md5_efi=$(md5sum *squashfs-combined-efi.img.gz | awk '{print $1}') 2>/dev/null || true
@@ -146,6 +141,7 @@ jobs:
         rm -rf sha256sums
         echo 'firmware文件夹下整理后有以下文件：'
         ls -Ahl
+        echo '========================================='
 
     - name: Upload Firmware To Artifact
       uses: actions/upload-artifact@main
