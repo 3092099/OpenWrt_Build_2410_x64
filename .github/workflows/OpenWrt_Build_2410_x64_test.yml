@@ -116,8 +116,8 @@ jobs:
         make -j$(($(nproc) + 1)) package/network/utils/nftables/refresh V=s
         IGNORE_ERRORS=1 make -j$(($(nproc) + 1))
         echo $?
-        echo '编译完成，targets文件夹下有以下文件：'
-        ls -Ahl $OPENWRT_PATH/bin/targets/
+        echo '编译完成，文件所在路径是：'
+        sudo find / -type f \( -name "combined.img" -o -name "combined-efi.img" \)
         echo '========================================='
 
     - name: Organize Files
