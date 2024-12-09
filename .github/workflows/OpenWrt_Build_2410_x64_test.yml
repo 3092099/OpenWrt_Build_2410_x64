@@ -111,57 +111,50 @@ jobs:
     - name: Compile Openwrt
       working-directory: ${{ github.workspace }}/openwrt
       id: compileopenwrt
-      continue-on-error: true
       run: |
-        make -j$(($(nproc) + 1)) package/network/utils/nftables/refresh V=s
-        IGNORE_ERRORS=1 make -j$(($(nproc) + 1))
-        echo $?
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 || make -j1 V=s
         echo '编译完成，文件所在路径是：'
         sudo find / -type f \( -name "combined.img" -o -name "combined-efi.img" \)
         echo '========================================='
 
     - name: Organize Files
+      working-directory: ${{ github.workspace }}/openwrt
       id: organize
       run: |
-        cd ./openwrt
-        mkdir -p firmware
-        echo 'bin/targets/文件夹下整理前有以下文件：'
-        ls -Ahl bin/targets/
-        echo '========================================='
-        rm -rf $(find ./bin/targets/ -iregex ".*\(json\|manifest\|buildinfo\|sha256sums\|packages\|bin\|rootfs.img.gz\|rootfs.tar.gz\|combined.img.gz\)$")
-        [ -e release ] && cp release ./firmware/release.txt
-        cd firmware
-        echo 'firmware文件夹下整理前有以下文件：'
-        ls -Ahl
-        echo '========================================='
-        echo -n "${{ env.DATE }}" > version.txt
-        md5=$(md5sum *squashfs-combined.img.gz | awk '{print $1}') 2>/dev/null || true
-        md5_efi=$(md5sum *squashfs-combined-efi.img.gz | awk '{print $1}') 2>/dev/null || true
-        echo "md5=$md5" > md5sum.txt
-        echo "md5_efi=$md5_efi" >> md5sum.txt
-        rm -rf sha256sums
-        echo 'firmware文件夹下整理后有以下文件：'
-        ls -Ahl
+        cd bin/targets/*/*
+        cat sha256sums
+        cp $OPENWRT_PATH/.config build.config
+        mv -f $OPENWRT_PATH/bin/packages/*/*/*.ipk packages
+        tar -zcf Packages.tar.gz packages
+        rm -rf packages feeds.buildinfo version.buildinfo
+        echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
+        echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
+        echo '$OPENWRT_PATH文件夹下整理前有以下文件：'
+        ls -Ahl ${{ env.FIRMWARE_PATH }}
         echo '========================================='
 
     - name: Upload Firmware To Artifact
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt_2410_x64_test
-        path: ./firmware/**
-
-    - name: Create Release
-      id: tag
-      run: |
-        echo "release_tag=${{ env.DATE }}" >> $GITHUB_OUTPUT
-        [ -e release ] && cp release ./release.txt
+        name: OpenWrt_Build_2410_x64_test
+        path: ${{ env.FIRMWARE_PATH }}
 
     - name: Upload Firmware To Release
-      uses: softprops/action-gh-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      uses: ncipollo/release-action@v1
       with:
-        files: ./firmware/*.*
-        name: OpenWrt_2410_x64_test
-        tag_name: OpenWrt_2410_x64_test
-        body_path: release.txt
+        name: OpenWrt_Build_2410_x64_test
+        allowUpdates: true
+        tag: OpenWrt_Build_2410_x64_test
+        token: ${{ secrets.GH_TOKEN }}
+        artifacts: ${{ env.FIRMWARE_PATH }}/*
+        body: |
+          ### 📒 固件信息
+          - 💻 平台架构: ${{ env.DEVICE_TARGET }}-${{ env.DEVICE_SUBTARGET }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址: 192.168.1.11
+          - 🔑 默认密码: 无密码
+          ### 🧊 固件版本
+          - 固件编译前最后一次➦[主源码](${{ env.REPO_URL }})更新记录
